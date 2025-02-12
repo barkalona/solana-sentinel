@@ -1,31 +1,73 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Transaction } from '../types';
+import { solanaService } from '../services/solana';
 
-const useTransactions = () => {
+export const useTransactions = (walletAddress: string) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [connected, setConnected] = useState(false);
 
     useEffect(() => {
-        const fetchTransactions = async () => {
-            try {
-                const response = await fetch('/api/transactions'); // Replace with your API endpoint
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data: Transaction[] = await response.json();
-                setTransactions(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
+        const handleConnectionChange = (status: boolean) => {
+            setConnected(status);
+            console.log('Connection status:', status);
         };
 
-        fetchTransactions();
+        // Subscribe to connection status changes
+        const unsubscribe = solanaService.onConnectionChange(handleConnectionChange);
+
+        return () => {
+            unsubscribe();
+        };
     }, []);
 
-    return { transactions, loading, error };
-};
+    useEffect(() => {
+        if (!walletAddress) {
+            setTransactions([]);
+            setError(null);
+            return;
+        }
 
-export default useTransactions;
+        setLoading(true);
+        setError(null);
+
+        try {
+            console.log('Subscribing to wallet transactions for:', walletAddress);
+            const unsubscribe = solanaService.subscribeToWalletTransactions(
+                walletAddress,
+                (transaction) => {
+                    console.log('New transaction:', transaction);
+                    setTransactions(prev => [...prev, transaction]);
+                }
+            );
+
+            return () => {
+                console.log('Unsubscribing from wallet transactions for:', walletAddress);
+                unsubscribe();
+            };
+        } catch (err) {
+            console.error('Error subscribing to wallet transactions:', err);
+            setError(err instanceof Error ? err.message : 'Failed to subscribe to transactions');
+        } finally {
+            setLoading(false);
+        }
+    }, [walletAddress]);
+
+    const refetch = () => {
+        setTransactions([]);
+        if (walletAddress) {
+            setLoading(true);
+            // Implement refetch logic if needed
+            setLoading(false);
+        }
+    };
+
+    return {
+        transactions,
+        loading,
+        error,
+        refetch,
+        connected
+    };
+};

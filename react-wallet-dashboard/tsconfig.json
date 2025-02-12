@@ -1,25 +1,33 @@
-react-wallet-dashboard
-├── src
-│   ├── components
-│   │   ├── Dashboard
-│   │   │   ├── Dashboard.tsx
-│   │   │   └── index.ts
-│   │   ├── Table
-│   │   │   ├── Table.tsx
-│   │   │   └── index.ts
-│   │   └── BarChart
-│   │       ├── BarChart.tsx
-│   │       └── index.ts
-│   ├── types
-│   │   └── index.ts
-│   ├── utils
-│   │   └── index.ts
-│   ├── hooks
-│   │   └── useTransactions.ts
-│   ├── App.tsx
-│   └── index.tsx
-├── public
-│   └── index.html
-├── package.json
-├── tsconfig.json
-└── README.md
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "downlevelIteration": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": true,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
+  },
+  "include": [
+    "src"
+  ]
+}

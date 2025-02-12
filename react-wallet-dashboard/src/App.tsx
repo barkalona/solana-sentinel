@@ -1,25 +1,15 @@
-react-wallet-dashboard
-├── src
-│   ├── components
-│   │   ├── Dashboard
-│   │   │   ├── Dashboard.tsx
-│   │   │   └── index.ts
-│   │   ├── Table
-│   │   │   ├── Table.tsx
-│   │   │   └── index.ts
-│   │   └── BarChart
-│   │       ├── BarChart.tsx
-│   │       └── index.ts
-│   ├── types
-│   │   └── index.ts
-│   ├── utils
-│   │   └── index.ts
-│   ├── hooks
-│   │   └── useTransactions.ts
-│   ├── App.tsx
-│   └── index.tsx
-├── public
-│   └── index.html
-├── package.json
-├── tsconfig.json
-└── README.md
+import React from 'react';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import { Dashboard } from './components/Dashboard';
+import theme from './theme';
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Dashboard />
+    </ThemeProvider>
+  );
+}
+
+export default App;
